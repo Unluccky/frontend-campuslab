@@ -1,22 +1,115 @@
-<div class="home-container">
-  <header class="home-header">
-    <h1>CampusLab</h1>
-    <p>Reserva de laboratorios y equipos académicos</p>
-    <a routerLink="/login" class="btn-login">Iniciar sesión</a>
+<div class="home">
+  <header class="site-header">
+    <a routerLink="/" class="brand" aria-label="CampusLab, inicio"
+      ><span class="brand-icon"
+        ><svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M9 3h6M10 3v6l-6 10a1.4 1.4 0 0 0 1.2 2h13.6a1.4 1.4 0 0 0 1.2-2L14 9V3M7 15h10"
+          /></svg></span
+      >Campus<span>Lab</span></a
+    >
+    <nav aria-label="Navegación principal">
+      <a href="#plataforma" class="about-link">La plataforma</a
+      ><a routerLink="/login" class="nav-login">Iniciar sesión <span aria-hidden="true">↗</span></a>
+    </nav>
   </header>
 
-  <section class="home-features">
-    <div class="feature-card">
-      <h3>📅 Reserva tus equipos</h3>
-      <p>Solicita el equipo o insumo de laboratorio que necesites para tu práctica.</p>
-    </div>
-    <div class="feature-card">
-      <h3>🔬 Catálogo actualizado</h3>
-      <p>Consulta la disponibilidad de recursos en tiempo real por laboratorio.</p>
-    </div>
-    <div class="feature-card">
-      <h3>📊 Seguimiento de estado</h3>
-      <p>Revisa el estado de tu reserva: solicitada, aprobada, en uso, devuelta.</p>
-    </div>
-  </section>
+  <main>
+    <section class="hero" aria-labelledby="home-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span aria-hidden="true"></span> GESTIÓN DE LABORATORIOS</span>
+        <h1 id="home-title">Tu laboratorio,<br /><span>mejor organizado.</span></h1>
+        <p>
+          Equipos, insumos y disponibilidad en un solo lugar. Menos tiempo buscando recursos, más
+          tiempo para aprender y crear.
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/login" class="button primary"
+            >Ingresar a CampusLab <span aria-hidden="true">→</span></a
+          ><a href="#plataforma" class="text-link"
+            >Conocer la plataforma <span aria-hidden="true">↓</span></a
+          >
+        </div>
+        <div class="access-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6" /></svg
+          ><span>Acceso seguro para la administración de tu campus.</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="images/laboratorio.svg"
+          width="640"
+          height="500"
+          alt="Ilustración de un microscopio junto a un matraz y un vaso de laboratorio"
+          fetchpriority="high"
+        />
+        <div class="image-caption">
+          <span class="caption-icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Cada recurso, en su lugar</strong><span>Equipos · Insumos · Laboratorios</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="plataforma" class="features" aria-labelledby="features-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">TODO MÁS SIMPLE</p>
+          <h2 id="features-title">El orden también impulsa el aprendizaje.</h2>
+        </div>
+        <p>
+          Una plataforma para cuidar los recursos<br class="desktop-break" />
+          que hacen posibles tus prácticas.
+        </p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon blue"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" /></svg
+          ></span>
+          <h3>Un catálogo organizado</h3>
+          <p>
+            Encuentra equipos e insumos por nombre, tipo o laboratorio. Todo el inventario, fácil de
+            consultar.
+          </p>
+          <span class="feature-tag">ENCUENTRA LO QUE NECESITAS</span>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon green"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 20V4m0 16h17M9 16v-5m5 5V7m5 9v-8" /></svg
+          ></span>
+          <h3>Disponibilidad a la vista</h3>
+          <p>
+            Consulta las unidades disponibles y el stock total para preparar cada actividad con
+            información clara.
+          </p>
+          <span class="feature-tag">PLANIFICA CON INFORMACIÓN</span>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon amber"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20H4V4h12v4M9 15l9-9 3 3-9 9-4 1z" /></svg
+          ></span>
+          <h3>Administración sencilla</h3>
+          <p>
+            Agrega recursos, actualiza sus datos y mantén el catálogo al día desde un mismo espacio
+            de trabajo.
+          </p>
+          <span class="feature-tag">MANTÉN TODO AL DÍA</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a routerLink="/" class="footer-brand">CampusLab<span> · Plataforma académica</span></a
+    ><span>Recursos que acompañan el aprendizaje.</span>
+  </footer>
 </div>

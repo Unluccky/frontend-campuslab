@@ -55,7 +55,7 @@ export class AuthService {
     return localStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
 
-  private hasValidToken(): boolean {
+  hasValidToken(): boolean {
     const token = localStorage.getItem(this.ACCESS_TOKEN_KEY);
     if (!token) return false;
 
@@ -77,7 +77,8 @@ export class AuthService {
   }
 
   hasRole(requiredRole: string): boolean {
-    const token = localStorage.getItem(this.ID_TOKEN_KEY);
+    if (!this.hasValidToken()) return false;
+    const token = localStorage.getItem(this.ACCESS_TOKEN_KEY);
     if (!token) return false;
 
     const payload = this.decodeToken(token);

@@ -13,4 +13,4 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('ROLE_ADMIN')]
   },
   { path: '**', redirectTo: '' }
-];''
+];

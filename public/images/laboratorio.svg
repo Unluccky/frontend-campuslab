@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="500" viewBox="0 0 640 500" fill="none">
+ <title>Microscopio y materiales de laboratorio</title>
+ <defs>
+  <linearGradient id="bg" x1="30" y1="0" x2="610" y2="500" gradientUnits="userSpaceOnUse"><stop stop-color="#edf2ff"/><stop offset="1" stop-color="#e0f1ed"/></linearGradient>
+  <linearGradient id="body" x1="254" y1="180" x2="373" y2="330" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#d7e0f0"/></linearGradient>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0v32" stroke="#8fa6d0" stroke-opacity=".12"/></pattern>
+  <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="13" stdDeviation="12" flood-color="#233e70" flood-opacity=".12"/></filter>
+ </defs>
+ <rect width="640" height="500" rx="28" fill="url(#bg)"/>
+ <rect width="640" height="500" rx="28" fill="url(#grid)"/>
+ <circle cx="344" cy="230" r="167" fill="white" fill-opacity=".48"/>
+ <circle cx="344" cy="230" r="130" stroke="#bccbe7" stroke-dasharray="4 8"/>
+ <path d="M83 399h478" stroke="#a5b7d2" stroke-width="2" stroke-linecap="round"/>
+ <ellipse cx="324" cy="405" rx="171" ry="13" fill="#6889b1" fill-opacity=".12"/>
+ <g filter="url(#shadow)">
+  <path d="M307 175c58 0 107 49 107 108 0 54-28 83-59 100h-48v-27c44-2 75-32 75-73 0-42-32-75-75-75z" fill="#4361ee"/>
+  <path d="M319 205c38 6 63 36 63 78 0 41-31 71-75 73" stroke="#8197ff" stroke-width="5" stroke-linecap="round"/>
+  <path d="M245 357h99l46 33H211z" fill="#dbe4f2"/>
+  <rect x="196" y="380" width="211" height="19" rx="9.5" fill="#233654"/>
+  <rect x="228" y="287" width="117" height="15" rx="4" fill="#253954"/>
+  <path d="M248 287v-9h34v9" stroke="#637a9b" stroke-width="5"/>
+  <path d="M274 301v55" stroke="#a4b6d0" stroke-width="16"/>
+  <path d="m268 244 35-17 13 28-35 17z" fill="#d4deed"/>
+  <path d="m278 262 15 31" stroke="#304665" stroke-width="12"/>
+  <path d="m312 248 17 21" stroke="#304665" stroke-width="9"/>
+  <path d="m266 111 48-23 54 114-72 35-23-48 23-11z" fill="url(#body)"/>
+  <rect x="249" y="112" width="72" height="27" rx="7" transform="rotate(-26 249 112)" fill="#233654"/>
+  <path d="m288 169 28-14" stroke="#8294b5" stroke-width="5" stroke-linecap="round"/>
+  <path d="m297 190 30-14" stroke="#c3cede" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="379" cy="292" r="24" fill="#1f3458"/>
+  <circle cx="379" cy="292" r="13" fill="#6f88b5"/>
+  <circle cx="379" cy="292" r="5" fill="#c7d5ef"/>
+ </g>
+ <g filter="url(#shadow)">
+  <path d="M115 288h47v32l25 61c3 9-1 17-12 17h-75c-11 0-15-8-12-17l27-61z" fill="white" fill-opacity=".85" stroke="#98b8c4" stroke-width="2"/>
+  <path d="m107 350-15 33c-3 7 0 11 8 11h75c8 0 11-4 8-11l-14-33z" fill="#57b8a6"/>
+  <path d="M115 287h47" stroke="#567a91" stroke-width="5" stroke-linecap="round"/>
+  <path d="M120 360h13m-18 12h13m-18 12h13" stroke="#d0f1e7" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="152" cy="371" r="4" fill="#b1e5d9"/><circle cx="141" cy="345" r="3" fill="#57b8a6"/>
+ </g>
+ <g filter="url(#shadow)">
+  <path d="M449 295h76l-9 99h-58z" fill="white" fill-opacity=".8" stroke="#a4b5d0" stroke-width="2"/>
+  <path d="M456 348h62l-4 43h-54z" fill="#f1bf73"/>
+  <path d="M479 312h14m-14 13h14m-14 13h14m-14 13h14m-14 13h14" stroke="#9eabc3" stroke-width="2"/>
+  <path d="M448 295h79" stroke="#7f95b4" stroke-width="4" stroke-linecap="round"/>
+  <path d="m505 351 22-91" stroke="#e6a56d" stroke-width="6" stroke-linecap="round"/>
+ </g>
+ <g fill="#4361ee"><circle cx="119" cy="176" r="5"/><circle cx="494" cy="137" r="4"/><path d="M462 211v14m-7-7h14" stroke="#6c83d5" stroke-width="2" stroke-linecap="round"/></g>
+ <g stroke="#88a7b3" stroke-width="2" stroke-linecap="round"><path d="M174 237v12m-6-6h12"/><path d="M428 98v10m-5-5h10"/></g>
+ <rect x="38" y="37" width="32" height="5" rx="2.5" fill="#4361ee"/>
+ <rect x="38" y="49" width="65" height="4" rx="2" fill="#b7c7df"/>
+ <path d="M557 434h43m-22 10h22" stroke="#9bb8c9" stroke-width="3" stroke-linecap="round"/>
+</svg>

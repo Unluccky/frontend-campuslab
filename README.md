@@ -1,59 +1,47 @@
-# FrontendCampuslab
+# CampusLab Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+Cliente Angular 22 de CampusLab para la EA1 de Iniciando Cloud Native I (Duoc UC). TypeScript, formularios reactivos y CSS propio; sin SSR ni Tailwind.
 
-## Development server
+## Pantallas
 
-To start a local development server, run:
+- **Home:** presentación, ilustración SVG local de laboratorio y acceso al login.
+- **Login:** autenticación real contra Cognito a través del BFF local; enlaces visuales de registro y recuperación de contraseña.
+- **Admin:** CRUD de recursos, indicadores calculados del catálogo, búsqueda, filtro por tipo, mensajes de validación y diseño adaptable a móvil.
 
-```bash
-ng serve
+La ruta `/admin` comprueba vigencia del token y grupo `ROLE_ADMIN`. El interceptor envía el access token solo a las APIs configuradas y omite el endpoint de login. La seguridad efectiva se valida también en API Gateway y catalog.
+
+## Ejecutar
+
+Instalar Node.js compatible con Angular 22 y npm; la versión usada por el proyecto figura en `package.json`.
+
+```powershell
+npm ci
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abrir `http://localhost:4200`. El BFF debe ejecutarse en el puerto 8081 con sus variables temporales de AWS Academy para iniciar sesión.
 
-## Code scaffolding
+## Configuración actual
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Editar `src/environments/environment.ts` y `environment.development.ts` si cambian los endpoints:
 
-```bash
-ng generate component component-name
+| Servicio | URL |
+|---|---|
+| Login BFF local | http://localhost:8081/api/bff |
+| Catálogo AWS | https://pludtc2ix3.execute-api.us-east-1.amazonaws.com/api/catalogo |
+| Reservas local | http://localhost:8083/api/reservas |
+
+El catálogo AWS requiere EC2 encendida y el Learner Lab disponible. Angular y BFF permanecen locales. La interfaz de reservas no está implementada. Para usar catálogo local, cambiar `apiCatalogo` a `http://localhost:8082/api/catalogo` en ambos archivos de entorno.
+
+## Validación
+
+```powershell
+npm run build
+npm test -- --watch=false --include=src/app/pages/admin-recursos/admin-recursos.spec.ts --include=src/app/core/auth.spec.ts --include=src/app/core/recurso.spec.ts
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Compilación aprobada y nueve pruebas específicas aprobadas. No se afirma que la suite completa de pruebas generadas por Angular esté validada. Home y Admin se revisaron visualmente en escritorio y a 390 px, sin desbordamiento horizontal. En Admin la revisión visual automatizada utiliza datos simulados; el login real y la creación de un recurso cloud se verificaron por separado.
 
-```bash
-ng generate --help
-```
+Los enlaces de registro y recuperación son visuales en EA1; aún no realizan esas operaciones. No incluir credenciales AWS ni contraseñas en el frontend.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+[Diagramas, despliegue y evidencias](https://github.com/Unluccky/CampusLab-Documentacion)

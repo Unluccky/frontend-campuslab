@@ -38,11 +38,20 @@ export class Login {
     this.authService.login(email!, password!).subscribe({
       next: () => {
         this.isLoading = false;
+        if (!this.authService.hasRole('ROLE_ADMIN')) {
+          this.authService.logout();
+          this.errorMessage = 'Esta sección requiere una cuenta administradora.';
+          return;
+        }
         this.router.navigate(['/admin']);
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Email o contraseña incorrectos.';
+        this.errorMessage = error.status === 401
+          ? 'Email o contraseña incorrectos.'
+          : error.status === 0
+            ? 'No se pudo conectar con el servidor. Comprueba que el BFF esté iniciado.'
+            : 'El servicio de inicio de sesión no está disponible. Revisa la consola del BFF.';
       }
     });
   }

@@ -6,12 +6,11 @@ export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  if (authService.hasValidToken()) {
     return true;
   }
 
-  router.navigate(['/login']);
-  return false;
+  return router.createUrlTree(['/login']);
 };
 
 export const roleGuard = (requiredRole: string): CanActivateFn => {
@@ -23,7 +22,6 @@ export const roleGuard = (requiredRole: string): CanActivateFn => {
       return true;
     }
 
-    router.navigate(['/unauthorized']);
-    return false;
+    return router.createUrlTree(['/login']);
   };
 };
