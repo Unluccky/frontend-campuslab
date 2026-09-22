@@ -1,0 +1,99 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  padding: 1rem;
+}
+
+.login-form {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-form h2 {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  color: #1a1a2e;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.form-group input.invalid {
+  border-color: #e63946;
+}
+
+.field-error {
+  color: #e63946;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.error-message {
+  color: #e63946;
+  background: #fdecea;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-extra-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.login-extra-links a {
+  color: #4361ee;
+  text-decoration: none;
+}
+
+/* Responsividad básica */
+@media (max-width: 480px) {
+  .login-form {
+    padding: 1.5rem;
+  }
+}
