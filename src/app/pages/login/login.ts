@@ -1,17 +1,18 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
 export class Login {
+  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -21,6 +22,8 @@ export class Login {
     password: ['', [Validators.required]]
   });
 
+  showPassword = false;
+  panel: 'registro' | 'recuperacion' | null = null;
   errorMessage = '';
   isLoading = false;
 
@@ -38,6 +41,7 @@ export class Login {
     this.authService.login(email!, password!).subscribe({
       next: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
         if (!this.authService.hasRole('ROLE_ADMIN')) {
           this.authService.logout();
           this.errorMessage = 'Esta sección requiere una cuenta administradora.';
@@ -47,6 +51,7 @@ export class Login {
       },
       error: (error) => {
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.errorMessage = error.status === 401
           ? 'Email o contraseña incorrectos.'
           : error.status === 0

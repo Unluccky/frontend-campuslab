@@ -1,5 +1,8 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Login } from './login';
+import { AuthService } from '../../core/auth';
 
 describe('Login', () => {
   let component: Login;
@@ -7,6 +10,7 @@ describe('Login', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideRouter([]), provideHttpClient(), {provide: AuthService, useValue: {hasValidToken: () => false}}],
       imports: [Login],
     }).compileComponents();
 

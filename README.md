@@ -1,3 +1,7 @@
+# Actualización: siguiente experiencia
+
+Rama feature/siguiente-experiencia. Incluye las mejoras solicitadas después de EA1; ver CampusLab-Documentacion/infra/siguiente/README.md. Catálogo, reservas y usuarios usan RDS en AWS. El frontend incorpora /admin/usuarios, guard probado y Login Admin renovado. El BFF conserva el login con Cognito y requiere credenciales temporales vigentes. La documentación EA1 que sigue describe la entrega anterior.
+
 # CampusLab Frontend
 
 Cliente Angular 22 de CampusLab para la EA1 de Iniciando Cloud Native I (Duoc UC). TypeScript, formularios reactivos y CSS propio; sin SSR ni Tailwind.

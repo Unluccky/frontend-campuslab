@@ -63,11 +63,12 @@ export class AuthService {
     if (!payload) return false;
 
     // exp viene en segundos, Date.now() en milisegundos
-    return payload.exp * 1000 > Date.now();
+    return typeof payload.exp === 'number' && Number.isFinite(payload.exp) && payload.exp * 1000 > Date.now();
   }
 
   private decodeToken(token: string): IdTokenPayload | null {
     try {
+      if (token.split('.').length !== 3) return null;
       const payloadBase64 = token.split('.')[1];
       const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
       return JSON.parse(payloadJson);
@@ -83,6 +84,6 @@ export class AuthService {
 
     const payload = this.decodeToken(token);
     const groups = payload?.['cognito:groups'] ?? [];
-    return groups.includes(requiredRole);
+    return Array.isArray(groups) && groups.includes(requiredRole);
   }
 }

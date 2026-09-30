@@ -1,3 +1,4 @@
+import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
 import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
@@ -12,5 +13,6 @@ export const routes: Routes = [
     component: AdminRecursos,
     canActivate: [authGuard, roleGuard('ROLE_ADMIN')]
   },
+  { path: 'admin/usuarios', component: AdminUsuarios, canActivate: [authGuard, roleGuard('ROLE_ADMIN')] },
   { path: '**', redirectTo: '' }
 ];

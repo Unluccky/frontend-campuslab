@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const isApi = [environment.apiBff, environment.apiCatalogo, environment.apiReservas]
+  const isApi = [environment.apiBff, environment.apiCatalogo, environment.apiReservas, environment.apiUsuarios]
     .some(base => req.url === base || req.url.startsWith(`${base}/`) || req.url.startsWith(`${base}?`));
   if (!isApi || req.url === `${environment.apiBff}/auth/login`) return next(req);
   const token = authService.getAccessToken();
