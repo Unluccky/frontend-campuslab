@@ -17,7 +17,7 @@ interface Ticket { reservaId: number; laboratorio: string; estado: string; respu
  @if(notice()){<p role="status">{{notice()}}</p>}
  <section><div class="section-heading"><span class="step">01</span><div><h2>Nueva reserva</h2><p>Selecciona un recurso y completa los datos de tu visita.</p></div></div><form #form="ngForm" (ngSubmit)="create()">
  <label>Recurso<select name="recursoId" required [(ngModel)]="draft.recursoId" (ngModelChange)="selectResource()">@if(!resources().length){<option [ngValue]="1">{{busy() ? 'Cargando recursos…' : error() ? 'No se pudieron cargar los recursos' : 'Sin recursos disponibles'}}</option>}@for(r of resources();track r.id){<option [ngValue]="r.id">{{r.nombre}} · disponibles: {{r.stockDisponible}}</option>}</select></label>
- <label>Laboratorio<input name="laboratorio" maxlength="100" required [(ngModel)]="draft.laboratorio"></label>
+ <label>Laboratorio<input name="laboratorio" readonly required [ngModel]="draft.laboratorio"><small>Asignado al recurso seleccionado.</small></label>
  <label>Nombre del solicitante<input name="solicitante" maxlength="150" required [(ngModel)]="draft.solicitante"></label>
  <label>Correo de contacto<input name="email" type="email" email required maxlength="254" [(ngModel)]="draft.emailSolicitante"></label>
  <label>Fecha y hora<input name="fecha" type="datetime-local" required [(ngModel)]="draft.fechaSolicitada"></label>
@@ -40,7 +40,7 @@ export class Bookings {
  draft={recursoId:1,laboratorio:'',solicitante:this.auth.account()?.name ?? '',emailSolicitante:this.auth.account()?.username ?? '',fechaSolicitada:''};
  constructor(){this.load();}
  load(){this.busy.set(true);this.error.set('');forkJoin({resources:this.http.get<Resource[]>(academicApiBase+'/recursos'),me:this.http.get<{roles:string[]}>(academicApiBase+'/me'),bookings:this.http.get<Booking[]>(academicApiBase+'/reservas'),tickets:this.http.get<Ticket[]>(academicApiBase+'/tickets')}).subscribe({next:r=>{this.resources.set(r.resources);if(r.resources.length && !r.resources.some(x=>x.id===this.draft.recursoId)){this.draft.recursoId=r.resources[0].id;}if(!this.draft.laboratorio)this.selectResource();this.operator.set(r.me.roles.some(x=>['ROLE_ADMIN','ROLE_OPERADOR'].includes(x)));this.bookings.set(r.bookings);this.tickets.set(r.tickets);this.busy.set(false);},error:e=>this.fail(e)});}
- create(){if(this.busy())return;this.busy.set(true);this.http.post(academicApiBase+'/reservas',this.draft).subscribe({next:()=>{this.notice.set('Reserva solicitada.');this.load();},error:e=>this.fail(e)});}
+ create(){if(this.busy())return;this.selectResource();this.busy.set(true);this.http.post(academicApiBase+'/reservas',this.draft).subscribe({next:()=>{this.notice.set('Reserva solicitada.');this.load();},error:e=>this.fail(e)});}
  change(id:number,state:string){if(this.busy())return;this.busy.set(true);this.http.patch(academicApiBase+'/reservas/'+id+'/estado',{nuevoEstado:state}).subscribe({next:()=>{this.notice.set('Estado actualizado. El ticket puede tardar unos segundos; pulsa Actualizar.');this.load();},error:e=>this.fail(e)});}
  answer(id:number){if(this.busy())return;this.busy.set(true);this.http.post(academicApiBase+'/tickets/'+id+'/respuestas',{respuesta:this.answers[id]}).subscribe({next:()=>{this.notice.set('Respuesta guardada.');this.load();},error:e=>this.fail(e)});}
  selectResource(){this.draft.laboratorio=this.resources().find(r=>r.id===this.draft.recursoId)?.laboratorio??'';}
