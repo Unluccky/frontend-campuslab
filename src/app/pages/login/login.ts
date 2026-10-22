@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
+import { MicrosoftAuth } from '../../core/microsoft-auth';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ import { AuthService } from '../../core/auth';
   styleUrl: './login.css'
 })
 export class Login {
+  readonly microsoft = inject(MicrosoftAuth);
   private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
