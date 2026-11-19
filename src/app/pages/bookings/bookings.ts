@@ -13,6 +13,7 @@ interface Resource { id:number; nombre:string; laboratorio:string; stockDisponib
 interface Booking { id: number; laboratorio: string; solicitante: string; fechaSolicitada: string; estado: string; }
 interface Ticket { reservaId: number; laboratorio: string; estado: string; respuesta: string | null; }
 type BookingDateFilter = 'all' | 'today' | 'past' | 'upcoming';
+type TicketStatusFilter = 'all' | 'PENDIENTE' | 'RESPONDIDO';
 @Component({
  selector: 'app-bookings', imports: [DatePipe, FormsModule, RouterLink],
  template: `
@@ -38,11 +39,11 @@ type BookingDateFilter = 'all' | 'today' | 'past' | 'upcoming';
  @if(b.estado==='EN_USO' || b.estado==='DEVUELTA'){<div class="booking-actions"><button class="secondary" (click)="download(b.id,'RETIRO')">Vale de retiro</button>@if(b.estado==='DEVUELTA'){<button class="secondary" (click)="download(b.id,'DEVOLUCION')">Acta de devolución</button>}</div>}
  </article>}
  @empty{<div class="empty-state"><span>▦</span><h3>{{error() ? "Reservas no disponibles" : bookings().length ? "No hay reservas para este filtro" : "Tu próxima experiencia empieza aquí"}}</h3><p>{{error() ? "No pudimos cargar la lista. Intenta actualizar en unos momentos." : bookings().length ? "Prueba con otro período o selecciona Todas." : "Cuando solicites una reserva, podrás seguir su estado en este espacio."}}</p></div>}</section>
- <section><h2>Tickets de preparación</h2><p>El ticket aparece después de que el técnico aprueba la reserva y se procesa la solicitud.</p>
- @for(t of tickets();track t.reservaId){<article><h3>Reserva #{{t.reservaId}} · {{t.laboratorio}}</h3><p>{{t.estado}}</p>
+ <section><div class="section-heading spread"><div><h2>Tickets de preparación <span class="count">{{filteredTickets().length}}</span></h2><p>El ticket aparece después de que el técnico aprueba la reserva y se procesa la solicitud.</p></div><label class="date-filter">Filtrar por estado<select name="ticketStatusFilter" [ngModel]="ticketStatusFilter()" (ngModelChange)="ticketStatusFilter.set($event)"><option value="all">Todos</option><option value="PENDIENTE">Pendientes</option><option value="RESPONDIDO">Respondidos</option></select></label></div>
+ @for(t of filteredTickets();track t.reservaId){<article><h3>Reserva #{{t.reservaId}} · {{t.laboratorio}}</h3><p>{{t.estado}}</p>
  @if(t.respuesta){<p>{{t.respuesta}}</p>}
  @if(operator() && t.estado==='PENDIENTE'){<label>Respuesta del técnico<textarea maxlength="2000" [(ngModel)]="answers[t.reservaId]"></textarea></label><button (click)="answer(t.reservaId)" [disabled]="busy() || !answers[t.reservaId]?.trim()">Responder</button>}</article>}
- @empty{<div class="empty-state"><span>☷</span><h3>{{error() ? "No pudimos cargar los tickets" : "Sin preparaciones pendientes"}}</h3><p>Las respuestas del equipo técnico aparecerán aquí.</p></div>}</section></main>`,
+ @empty{<div class="empty-state"><span>☷</span><h3>{{error() ? "No pudimos cargar los tickets" : tickets().length ? "No hay tickets con este estado" : "Sin preparaciones pendientes"}}</h3><p>{{error() ? "No pudimos cargar los tickets" : tickets().length ? "Prueba con otro estado o selecciona Todos." : "Las respuestas del equipo técnico aparecerán aquí."}}</p></div>}</section></main>`,
  styleUrls: ['../academic.css'],
  styles: [`
    .booking-card { padding: 1rem 1.25rem; border: 1px solid #d8e5e9; border-radius: .9rem; margin: .75rem 0; background: #fbfdfe; }
@@ -63,6 +64,7 @@ export class Bookings {
  private http=inject(HttpClient);private auth=inject(MicrosoftAuth);private cognito=inject(AuthService);
  resources=signal<Resource[]>([]);bookings=signal<Booking[]>([]);tickets=signal<Ticket[]>([]);operator=signal(false);busy=signal(false);error=signal('');notice=signal('');
  bookingDateFilter=signal<BookingDateFilter>('all');
+ ticketStatusFilter=signal<TicketStatusFilter>('all');
  answers:Record<number,string>={};
  roleLabel=signal('Portal académico');
  actionLabel(state:string):string {
@@ -82,6 +84,10 @@ export class Bookings {
      if(filter==='past')return bookingDay.getTime()<today.getTime();
      return bookingDay.getTime()>today.getTime();
    });
+ }
+ filteredTickets():Ticket[]{
+   const filter=this.ticketStatusFilter();
+   return filter==='all'?this.tickets():this.tickets().filter(ticket=>ticket.estado===filter);
  }
  isCognitoSession():boolean{return this.cognito.hasValidToken();}
  private get isCognito():boolean{return this.isCognitoSession();}
