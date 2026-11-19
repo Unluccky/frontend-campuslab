@@ -8,7 +8,7 @@ Aplicación Angular 22 para las experiencias de CampusLab. La interfaz académic
 |---|---|
 | `/login` | Acceso académico con Microsoft o acceso administrativo con Cognito. |
 | `/acceso-externo` | Registro/confirmación del usuario externo mediante Cognito. |
-| `/cuenta` | Perfil de la sesión académica y acceso a herramientas. |
+| `/cuenta` | Perfil y accesos rápidos; Técnico/Admin dispone de la tarjeta Estado y tickets. |
 | `/reservas` | Solicitud y seguimiento; filtro de reservas por fecha, tickets por estado y espacio técnico separado para gestionar estados y tickets. |
 | `/cuenta/recursos` | Administración de recursos y stock para Admin. |
 | `/cuenta/usuarios` | Consulta de cuentas, restringida a Admin. |

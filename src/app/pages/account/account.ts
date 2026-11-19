@@ -15,6 +15,9 @@ import { MicrosoftAuth } from '../../core/microsoft-auth';
         <div class="session"><span class="status-dot"></span> Sesión activa</div>
       </section>
       <div class="quick-grid"><a class="quick-card" routerLink="/reservas"><span class="tile-icon">↗</span><h2>Mis reservas</h2><p>Solicita un espacio o equipo y sigue su preparación.</p><span class="card-link">Ver reservas <span>→</span></span></a>
+      @if(canManageTickets()){
+        <a class="quick-card" routerLink="/reservas" fragment="estado-y-tickets"><span class="tile-icon">☷</span><h2>Estado y tickets</h2><p>Gestiona el avance de las reservas y responde tickets de preparación.</p><span class="card-link">Gestionar estado y tickets <span>→</span></span></a>
+      }
       @if(roles().includes('ROLE_ADMIN')){
         <a class="quick-card" routerLink="/cuenta/recursos"><span class="tile-icon">▦</span><h2>Recursos</h2><p>Crea y edita equipos e insumos del laboratorio.</p><span class="card-link">Administrar recursos <span>→</span></span></a>
         <a class="quick-card" routerLink="/mensajeria/admin"><span class="tile-icon">≋</span><h2>Mensajería</h2><p>Gestiona colas, exchanges y enlaces del laboratorio.</p><span class="card-link">Abrir administración <span>→</span></span></a>
@@ -37,6 +40,7 @@ export class Account {
   readonly roles = signal<string[]>([]);
   constructor() { this.checkApi(); }
   initials(): string { return (this.auth.account()?.name || 'CL').split(' ').filter(Boolean).slice(0,2).map(n=>n[0]).join(''); }
+  canManageTickets(): boolean { return this.roles().some(role => role === 'ROLE_OPERADOR' || role === 'ROLE_ADMIN'); }
   displayRoles(): string[] { const labels: Record<string,string> = {ROLE_ADMIN:'Administrador',ROLE_OPERADOR:'Técnico',ROLE_ESTUDIANTE:'Estudiante',ROLE_AUDITOR:'Auditor'}; return this.roles().filter(r=>labels[r]).map(r=>labels[r]); }
   checkApi(): void {
     if (this.checking()) return;
