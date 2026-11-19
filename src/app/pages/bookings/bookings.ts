@@ -12,6 +12,7 @@ import { of } from 'rxjs';
 interface Resource { id:number; nombre:string; laboratorio:string; stockDisponible:number; }
 interface Booking { id: number; laboratorio: string; solicitante: string; fechaSolicitada: string; estado: string; }
 interface Ticket { reservaId: number; laboratorio: string; estado: string; respuesta: string | null; }
+type BookingDateFilter = 'all' | 'today' | 'past' | 'upcoming';
 @Component({
  selector: 'app-bookings', imports: [DatePipe, FormsModule, RouterLink],
  template: `
@@ -26,8 +27,8 @@ interface Ticket { reservaId: number; laboratorio: string; estado: string; respu
  <label>Correo de contacto<input name="email" type="email" email required maxlength="254" [(ngModel)]="draft.emailSolicitante"></label>
  <label>Fecha y hora<input name="fecha" type="datetime-local" required [(ngModel)]="draft.fechaSolicitada"></label>
  <button [disabled]="busy() || !form.valid">Solicitar reserva</button></form></section>
- <section><div class="section-heading spread"><div><h2>{{operator() ? 'Reservas del laboratorio' : 'Mis reservas'}} <span class="count">{{bookings().length}}</span></h2><p>{{operator() ? 'Revisa el estado de cada solicitud y registra el siguiente paso.' : 'Consulta el estado y descarga tus comprobantes.'}}</p></div><button class="secondary" (click)="load()" [disabled]="busy()">{{busy() ? "Cargando…" : "↻ Actualizar"}}</button></div>
- @for(b of bookings();track b.id){<article class="booking-card">
+ <section><div class="section-heading spread"><div><h2>{{operator() ? 'Reservas del laboratorio' : 'Mis reservas'}} <span class="count">{{filteredBookings().length}}</span></h2><p>{{operator() ? 'Revisa el estado de cada solicitud y registra el siguiente paso.' : 'Consulta el estado y descarga tus comprobantes.'}}</p></div><div class="booking-list-actions"><label class="date-filter">Filtrar por fecha<select name="bookingDateFilter" [ngModel]="bookingDateFilter()" (ngModelChange)="bookingDateFilter.set($event)"><option value="all">Todas</option><option value="today">Hoy</option><option value="past">Días anteriores</option><option value="upcoming">Próximas</option></select></label><button class="secondary" (click)="load()" [disabled]="busy()">{{busy() ? "Cargando…" : "↻ Actualizar"}}</button></div></div>
+ @for(b of filteredBookings();track b.id){<article class="booking-card">
  <div class="booking-header"><div><p class="eyebrow">RESERVA #{{b.id}}</p><h3>{{b.laboratorio}}</h3><p>{{b.solicitante}} · {{b.fechaSolicitada | date:'dd/MM/yyyy HH:mm'}}</p></div><strong class="badge booking-state" [attr.data-state]="b.estado">{{b.estado.replaceAll("_"," ")}}</strong></div>
  @if (nextStates(b.estado).length && operator()) {
    <div class="booking-actions" role="group" [attr.aria-label]="'Cambiar estado de la reserva ' + b.id">
@@ -36,7 +37,7 @@ interface Ticket { reservaId: number; laboratorio: string; estado: string; respu
  }
  @if(b.estado==='EN_USO' || b.estado==='DEVUELTA'){<div class="booking-actions"><button class="secondary" (click)="download(b.id,'RETIRO')">Vale de retiro</button>@if(b.estado==='DEVUELTA'){<button class="secondary" (click)="download(b.id,'DEVOLUCION')">Acta de devolución</button>}</div>}
  </article>}
- @empty{<div class="empty-state"><span>▦</span><h3>{{error() ? "Reservas no disponibles" : "Tu próxima experiencia empieza aquí"}}</h3><p>{{error() ? "No pudimos cargar la lista. Intenta actualizar en unos momentos." : "Cuando solicites una reserva, podrás seguir su estado en este espacio."}}</p></div>}</section>
+ @empty{<div class="empty-state"><span>▦</span><h3>{{error() ? "Reservas no disponibles" : bookings().length ? "No hay reservas para este filtro" : "Tu próxima experiencia empieza aquí"}}</h3><p>{{error() ? "No pudimos cargar la lista. Intenta actualizar en unos momentos." : bookings().length ? "Prueba con otro período o selecciona Todas." : "Cuando solicites una reserva, podrás seguir su estado en este espacio."}}</p></div>}</section>
  <section><h2>Tickets de preparación</h2><p>El ticket aparece después de que el técnico aprueba la reserva y se procesa la solicitud.</p>
  @for(t of tickets();track t.reservaId){<article><h3>Reserva #{{t.reservaId}} · {{t.laboratorio}}</h3><p>{{t.estado}}</p>
  @if(t.respuesta){<p>{{t.respuesta}}</p>}
@@ -52,11 +53,16 @@ interface Ticket { reservaId: number; laboratorio: string; estado: string; respu
    .booking-state[data-state="CANCELADA"] { background: #fbeae7; color: #883129; }
    .booking-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .85rem; }
    .cancel-action { background: #fff1ee; color: #883129; border: 1px solid #ebc1bb; }
+   .booking-list-actions { display:flex; align-items:end; gap:.75rem; flex-wrap:wrap; }
+   .date-filter { display:grid; gap:.3rem; color:#51677d; font-size:.82rem; font-weight:600; }
+   .date-filter select { min-width:10rem; padding:.65rem .8rem; border:1px solid #cbdbe2; border-radius:.65rem; background:#fff; color:#17334a; font:inherit; }
+   @media(max-width:640px) { .booking-list-actions { width:100%; align-items:stretch; } .date-filter { flex:1; } .date-filter select { width:100%; } }
  `]
 })
 export class Bookings {
  private http=inject(HttpClient);private auth=inject(MicrosoftAuth);private cognito=inject(AuthService);
  resources=signal<Resource[]>([]);bookings=signal<Booking[]>([]);tickets=signal<Ticket[]>([]);operator=signal(false);busy=signal(false);error=signal('');notice=signal('');
+ bookingDateFilter=signal<BookingDateFilter>('all');
  answers:Record<number,string>={};
  roleLabel=signal('Portal académico');
  actionLabel(state:string):string {
@@ -64,6 +70,19 @@ export class Bookings {
  }
  draft={recursoId:1,laboratorio:'',solicitante:this.auth.account()?.name ?? '',emailSolicitante:this.auth.account()?.username ?? '',fechaSolicitada:''};
  constructor(){this.load();}
+ filteredBookings():Booking[]{
+   const filter=this.bookingDateFilter();
+   if(filter==='all')return this.bookings();
+   const today=new Date();today.setHours(0,0,0,0);
+   return this.bookings().filter(booking=>{
+     const requestedAt=new Date(booking.fechaSolicitada);
+     if(Number.isNaN(requestedAt.getTime()))return false;
+     const bookingDay=new Date(requestedAt.getFullYear(),requestedAt.getMonth(),requestedAt.getDate());
+     if(filter==='today')return bookingDay.getTime()===today.getTime();
+     if(filter==='past')return bookingDay.getTime()<today.getTime();
+     return bookingDay.getTime()>today.getTime();
+   });
+ }
  isCognitoSession():boolean{return this.cognito.hasValidToken();}
  private get isCognito():boolean{return this.isCognitoSession();}
  private get resourcesUrl():string{return this.isCognito?environment.apiCatalogo:academicApiBase+'/recursos';}
