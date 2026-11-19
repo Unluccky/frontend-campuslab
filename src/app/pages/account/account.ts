@@ -14,8 +14,11 @@ import { MicrosoftAuth } from '../../core/microsoft-auth';
         <div class="avatar">{{ initials() }}</div><div class="profile-info"><p class="eyebrow">BIENVENIDO A CAMPUSLAB</p><h2>{{ auth.account()?.name || 'Estudiante' }}</h2><p>{{ auth.account()?.username }}</p><div class="badges">@for(role of displayRoles(); track role){<span class="badge">{{role}}</span>}</div></div>
         <div class="session"><span class="status-dot"></span> Sesión activa</div>
       </section>
-      <div class="quick-grid"><a class="quick-card" routerLink="/reservas"><span class="tile-icon">↗</span><h2>Mis reservas</h2><p>Solicita un espacio o equipo y sigue su preparación.</p><span class="card-link">Ver reservas <span>→</span></span></a>
-      @if(canManageTickets()){
+      <div class="quick-grid">
+      @if(!checking() && !isTechnician()){
+        <a class="quick-card" routerLink="/reservas"><span class="tile-icon">↗</span><h2>Mis reservas</h2><p>Solicita un espacio o equipo y sigue su preparación.</p><span class="card-link">Ver reservas <span>→</span></span></a>
+      }
+      @if(!checking() && canManageTickets()){
         <a class="quick-card" routerLink="/reservas" fragment="estado-y-tickets"><span class="tile-icon">☷</span><h2>Estado y tickets</h2><p>Gestiona el avance de las reservas y responde tickets de preparación.</p><span class="card-link">Gestionar estado y tickets <span>→</span></span></a>
       }
       @if(roles().includes('ROLE_ADMIN')){
@@ -40,6 +43,7 @@ export class Account {
   readonly roles = signal<string[]>([]);
   constructor() { this.checkApi(); }
   initials(): string { return (this.auth.account()?.name || 'CL').split(' ').filter(Boolean).slice(0,2).map(n=>n[0]).join(''); }
+  isTechnician(): boolean { return this.roles().includes('ROLE_OPERADOR'); }
   canManageTickets(): boolean { return this.roles().some(role => role === 'ROLE_OPERADOR' || role === 'ROLE_ADMIN'); }
   displayRoles(): string[] { const labels: Record<string,string> = {ROLE_ADMIN:'Administrador',ROLE_OPERADOR:'Técnico',ROLE_ESTUDIANTE:'Estudiante',ROLE_AUDITOR:'Auditor'}; return this.roles().filter(r=>labels[r]).map(r=>labels[r]); }
   checkApi(): void {
