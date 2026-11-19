@@ -1,15 +1,44 @@
 import {Component,inject,ChangeDetectorRef} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder,ReactiveFormsModule,Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
+import {ActivatedRoute,RouterLink} from '@angular/router';
+import {academicApiBase,cognitoDirectoryApi} from '../../auth-config';
 import {environment} from '../../../environments/environment';
 interface Usuario {id:number;cognitoSub:string;nombre:string;email:string;activo:boolean;version:number}
+interface Cuenta {id:string;nombre:string;email:string|null;proveedor:string;habilitada:boolean|null}
+interface Directorio {cuentas:Cuenta[];proveedoresNoDisponibles:string[]}
 @Component({selector:'app-admin-usuarios',standalone:true,imports:[RouterLink,ReactiveFormsModule],templateUrl:'./admin-usuarios.html',styleUrl:'./admin-usuarios.css'})
 export class AdminUsuarios {
  private cdr=inject(ChangeDetectorRef);private http=inject(HttpClient);private fb=inject(FormBuilder);
  usuarios:Usuario[]=[];error='';message='';editing:Usuario|null=null;busy=false;page=0;totalPages=0;
+ cuentas:Cuenta[]=[];
+ readonly academic=inject(ActivatedRoute).snapshot.data['academic']===true;
+ proveedoresNoDisponibles:string[]=[];
+ errorDirectorio=false;
+ cargandoDirectorio=false;
  form=this.fb.nonNullable.group({cognitoSub:['',[Validators.required,Validators.pattern(/^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$/)]],nombre:['',[Validators.required,Validators.maxLength(160)]],email:['',[Validators.required,Validators.email,Validators.maxLength(254)]],activo:[true]});
- constructor(){this.load();}
+ constructor(){if(!this.academic)this.load();this.loadDirectory();}
+ loadDirectory(){
+  if(this.cargandoDirectorio)return;
+  this.cargandoDirectorio=true;
+  this.errorDirectorio=false;
+  const api=this.academic ? academicApiBase+'/admin/directorio' : cognitoDirectoryApi;
+  this.http.get<Directorio>(api).subscribe({
+   next:result=>{
+    this.cuentas=result.cuentas;
+    this.proveedoresNoDisponibles=result.proveedoresNoDisponibles;
+    this.cargandoDirectorio=false;
+    this.cdr.markForCheck();
+   },
+   error:()=>{
+    this.cuentas=[];
+    this.proveedoresNoDisponibles=[];
+    this.errorDirectorio=true;
+    this.cargandoDirectorio=false;
+    this.cdr.markForCheck();
+   }
+  });
+ }
  load(){this.error='';this.http.get<{content:Usuario[];totalPages:number}>(environment.apiUsuarios+'?page='+this.page).subscribe({next:r=>{this.usuarios=r.content;this.totalPages=r.totalPages;this.cdr.markForCheck();},error:()=>{this.error='No fue posible cargar los usuarios. Comprueba tu sesión y vuelve a intentar.';this.cdr.markForCheck();}});}
  changePage(delta:number){this.page+=delta;this.load();}
  edit(u:Usuario){this.editing=u;this.form.setValue({cognitoSub:u.cognitoSub,nombre:u.nombre,email:u.email,activo:u.activo});this.form.controls.cognitoSub.disable();this.message='';}

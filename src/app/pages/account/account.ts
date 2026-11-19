@@ -15,7 +15,12 @@ import { MicrosoftAuth } from '../../core/microsoft-auth';
         <div class="session"><span class="status-dot"></span> Sesión activa</div>
       </section>
       <div class="quick-grid"><a class="quick-card" routerLink="/reservas"><span class="tile-icon">↗</span><h2>Mis reservas</h2><p>Solicita un espacio o equipo y sigue su preparación.</p><span class="card-link">Ver reservas <span>→</span></span></a>
-      @if(roles().includes('ROLE_ADMIN')){<a class="quick-card" routerLink="/mensajeria/admin"><span class="tile-icon">≋</span><h2>Mensajería</h2><p>Gestiona colas, exchanges y enlaces del laboratorio.</p><span class="card-link">Abrir administración <span>→</span></span></a>}</div>
+      @if(roles().includes('ROLE_ADMIN')){
+        <a class="quick-card" routerLink="/cuenta/recursos"><span class="tile-icon">▦</span><h2>Recursos</h2><p>Crea y edita equipos e insumos del laboratorio.</p><span class="card-link">Administrar recursos <span>→</span></span></a>
+        <a class="quick-card" routerLink="/mensajeria/admin"><span class="tile-icon">≋</span><h2>Mensajería</h2><p>Gestiona colas, exchanges y enlaces del laboratorio.</p><span class="card-link">Abrir administración <span>→</span></span></a>
+        <a class="quick-card" routerLink="/kafka/admin"><span class="tile-icon">≋</span><h2>Administración de Kafka</h2><p>Consulta los topics con tu sesión de Microsoft.</p><span class="card-link">Abrir Kafka <span>→</span></span></a>
+        <a class="quick-card" routerLink="/cuenta/reportes"><span class="tile-icon">▥</span><h2>Reportería</h2><p>Indicadores de reservas y dashboard de actividad Kafka.</p><span class="card-link">Ver reportería <span>→</span></span></a>
+      }</div>
       <section class="access-panel"><div><h2>Acceso y seguridad</h2><p role="status">{{ apiStatus() || 'Verifica los permisos de tu cuenta académica.' }}</p></div><button class="secondary" (click)="checkApi()" [disabled]="checking()">{{checking() ? 'Verificando…' : 'Verificar acceso'}}</button></section>
       <div class="logout-row"><p>Tu cuenta está conectada mediante Microsoft.</p>
         @if (auth.error()) { <p role="alert">{{ auth.error() }}</p> }

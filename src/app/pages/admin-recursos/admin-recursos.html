@@ -11,8 +11,8 @@
     </a>
     <div class="workspace-label">ESPACIO DE TRABAJO</div>
     <nav>
-      <a routerLink="/" class="nav-link"><span aria-hidden="true">⌂</span> Inicio</a>
-      <a routerLink="/admin" class="nav-link selected" aria-current="page"
+      <a [routerLink]="academic ? '/cuenta' : '/'" class="nav-link"><span aria-hidden="true">⌂</span> {{ academic ? 'Mi cuenta' : 'Inicio' }}</a>
+      <a [routerLink]="academic ? '/cuenta/recursos' : '/admin'" class="nav-link selected" aria-current="page"
         ><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <rect x="3" y="3" width="7" height="7" rx="1.5" />
           <rect x="14" y="3" width="7" height="7" rx="1.5" />
@@ -21,7 +21,8 @@
         </svg>
         Recursos</a
       >
-    <a routerLink="/admin/usuarios" class="nav-link">Usuarios</a></nav>
+      <a [routerLink]="academic ? '/cuenta/usuarios' : '/admin/usuarios'" class="nav-link">Usuarios</a>
+    </nav>
     <div class="sidebar-note">
       <span class="small-label">CAMPUSLAB</span>
       <p>Un espacio para aprender.<br />Recursos para hacerlo posible.</p>
@@ -35,9 +36,9 @@
       <div class="account">
         <span class="avatar" aria-hidden="true">A</span
         ><span class="account-name">Administrador<small>Gestión de catálogo</small></span
-        ><button class="logout" (click)="logout()">
-          Cerrar sesión <span aria-hidden="true">↗</span>
-        </button>
+        >
+        @if (academic) { <a class="logout" routerLink="/cuenta">Mi cuenta</a> }
+        @else { <button class="logout" (click)="logout()">Cerrar sesión <span aria-hidden="true">↗</span></button> }
       </div>
     </header>
 

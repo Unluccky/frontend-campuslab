@@ -43,6 +43,14 @@ export class AuthService {
       );
   }
 
+  register(email: string, password: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBff}/auth/register`, { email, password });
+  }
+
+  confirmRegistration(email: string, code: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBff}/auth/confirm`, { email, code });
+  }
+
   logout(): void {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.ID_TOKEN_KEY);

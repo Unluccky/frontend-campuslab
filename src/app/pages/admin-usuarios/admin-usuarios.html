@@ -1,1 +1,32 @@
-<main><a routerLink="/admin">← Volver a recursos</a><header><span>ADMINISTRACIÓN</span><h1>Usuarios de CampusLab</h1><p>Gestiona los perfiles asociados a cuentas de Cognito.</p></header>@if(error){<p role="alert" class="error">{{error}}</p>}@if(message){<p role="status">{{message}}</p>}<div class="layout"><section><h2>Perfiles registrados</h2><div class="table-wrap"><table><thead><tr><th>Nombre y correo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>@for(u of usuarios;track u.id){<tr><td><strong>{{u.nombre}}</strong><small>{{u.email}}</small></td><td>{{u.activo ? 'Activo' : 'Inactivo'}}</td><td><button (click)="edit(u)">Editar</button>@if(u.activo){<button (click)="deactivate(u)">Desactivar</button>}</td></tr>}@empty{<tr><td colspan="3">No hay perfiles en esta página.</td></tr>}</tbody></table></div><div class="pagination"><button [disabled]="page===0" (click)="changePage(-1)">Anterior</button><span>Página {{page+1}}</span><button [disabled]="page+1>=totalPages" (click)="changePage(1)">Siguiente</button></div><button (click)="load()">Actualizar listado</button></section><form [formGroup]="form" (ngSubmit)="save()"><h2>{{editing ? 'Editar perfil' : 'Nuevo perfil'}}</h2><p class="hint">El perfil no crea una cuenta ni cambia permisos de acceso en Cognito.</p><label for="sub">Identificador Cognito (sub)</label><input id="sub" formControlName="cognitoSub" placeholder="UUID de la cuenta"/><label for="name">Nombre</label><input id="name" formControlName="nombre" maxlength="160"/><label for="mail">Correo</label><input id="mail" type="email" formControlName="email" maxlength="254"/>@if(editing){<label><input type="checkbox" formControlName="activo"/> Perfil activo</label>}@if(form.invalid && form.touched){<p class="error">Completa nombre, correo válido e identificador UUID.</p>}<button type="submit" [disabled]="busy">{{busy ? 'Guardando…' : 'Guardar perfil'}}</button>@if(editing){<button type="button" (click)="cancel()">Cancelar edición</button>}</form></div></main>
+<main><a [routerLink]="academic ? '/cuenta/recursos' : '/admin'">← Volver a recursos</a><header><span>ADMINISTRACIÓN</span><h1>Usuarios de CampusLab</h1><p>Consulta las cuentas de Microsoft Entra ID y Amazon Cognito.</p></header>@if(error){<p role="alert" class="error">{{error}}</p>}@if(message){<p role="status">{{message}}</p>}<section aria-labelledby="directory-title" [attr.aria-busy]="cargandoDirectorio">
+  <h2 id="directory-title">Directorio de cuentas</h2>
+  <p class="hint">Incluye las cuentas del directorio Entra de CampusLab y del grupo de usuarios de Cognito. El estado indica si la cuenta está habilitada en su proveedor.</p>
+  <button type="button" (click)="loadDirectory()" [disabled]="cargandoDirectorio">Actualizar cuentas</button>
+  @if (cargandoDirectorio) {
+    <p role="status">Consultando proveedores…</p>
+  } @else if (errorDirectorio) {
+    <p role="alert" class="error">No fue posible consultar el directorio. Comprueba tu sesión y vuelve a intentar.</p>
+  } @else {
+    @if (proveedoresNoDisponibles.length) {
+      <p role="status">Listado parcial. No se pudo consultar {{ proveedoresNoDisponibles.join(', ') }}.</p>
+    }
+    <p>{{ cuentas.length }} {{ cuentas.length === 1 ? 'cuenta disponible' : 'cuentas disponibles' }}</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Nombre y correo</th><th>Proveedor</th><th>Estado</th></tr></thead>
+        <tbody>
+          @for (cuenta of cuentas; track cuenta.proveedor + ':' + cuenta.id) {
+            <tr>
+              <td><strong>{{ cuenta.nombre }}</strong><small>{{ cuenta.email || 'Sin correo disponible' }}</small></td>
+              <td>{{ cuenta.proveedor }}</td>
+              <td>{{ cuenta.habilitada === null ? 'Desconocido' : cuenta.habilitada ? 'Habilitada' : 'Deshabilitada' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3">No hay cuentas disponibles para mostrar.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+@if (!academic) { <div class="layout"><section><h2>Perfiles registrados</h2><div class="table-wrap"><table><thead><tr><th>Nombre y correo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>@for(u of usuarios;track u.id){<tr><td><strong>{{u.nombre}}</strong><small>{{u.email}}</small></td><td>{{u.activo ? 'Activo' : 'Inactivo'}}</td><td><button (click)="edit(u)">Editar</button>@if(u.activo){<button (click)="deactivate(u)">Desactivar</button>}</td></tr>}@empty{<tr><td colspan="3">No hay perfiles en esta página.</td></tr>}</tbody></table></div><div class="pagination"><button [disabled]="page===0" (click)="changePage(-1)">Anterior</button><span>Página {{page+1}}</span><button [disabled]="page+1>=totalPages" (click)="changePage(1)">Siguiente</button></div><button (click)="load()">Actualizar listado</button></section><form [formGroup]="form" (ngSubmit)="save()"><h2>{{editing ? 'Editar perfil' : 'Nuevo perfil'}}</h2><p class="hint">El perfil no crea una cuenta ni cambia permisos de acceso en Cognito.</p><label for="sub">Identificador Cognito (sub)</label><input id="sub" formControlName="cognitoSub" placeholder="UUID de la cuenta"/><label for="name">Nombre</label><input id="name" formControlName="nombre" maxlength="160"/><label for="mail">Correo</label><input id="mail" type="email" formControlName="email" maxlength="254"/>@if(editing){<label><input type="checkbox" formControlName="activo"/> Perfil activo</label>}@if(form.invalid && form.touched){<p class="error">Completa nombre, correo válido e identificador UUID.</p>}<button type="submit" [disabled]="busy">{{busy ? 'Guardando…' : 'Guardar perfil'}}</button>@if(editing){<button type="button" (click)="cancel()">Cancelar edición</button>}</form></div> }</main>

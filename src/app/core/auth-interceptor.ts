@@ -3,15 +3,15 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from './auth';
 import { environment } from '../../environments/environment';
-import { academicApiBase } from '../auth-config';
+import { academicApiBase, cognitoDirectoryApi, kafkaAdminApi, reportesApi } from '../auth-config';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // MSAL exclusively owns these requests; a 401 must not log out Cognito.
-  if (req.url === academicApiBase || req.url.startsWith(academicApiBase + '/')) return next(req);
+  if (req.url === academicApiBase || req.url.startsWith(academicApiBase + '/') || req.url === reportesApi || req.url.startsWith(reportesApi + '/') || req.url === kafkaAdminApi || req.url.startsWith(kafkaAdminApi + '/')) return next(req);
   const authService = inject(AuthService);
-  const isApi = [environment.apiBff, environment.apiCatalogo, environment.apiReservas, environment.apiUsuarios]
+  const isApi = [environment.apiBff, environment.apiCatalogo, environment.apiReservas, environment.apiUsuarios, cognitoDirectoryApi]
     .some(base => req.url === base || req.url.startsWith(`${base}/`) || req.url.startsWith(`${base}?`));
-  if (!isApi || req.url === `${environment.apiBff}/auth/login`) return next(req);
+  if (!isApi || req.url.startsWith(`${environment.apiBff}/auth/`)) return next(req);
   const token = authService.getAccessToken();
 
   const authReq = token

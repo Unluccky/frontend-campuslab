@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -23,9 +23,13 @@ export interface RecursoDto {
   stockTotal: number;
 }
 
+export const CATALOG_API = new InjectionToken<string>('Catalog API', {
+  factory: () => environment.apiCatalogo,
+});
+
 @Injectable({ providedIn: 'root' })
 export class RecursoService {
-  private apiUrl = environment.apiCatalogo;
+  private apiUrl = inject(CATALOG_API);
 
   constructor(private http: HttpClient) {}
 

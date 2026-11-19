@@ -14,6 +14,15 @@ export const msalConfig: Configuration = {
 
 // Academic requests pass through API Gateway and the Azure-protected BFF.
 export const academicApiBase = 'https://pludtc2ix3.execute-api.us-east-1.amazonaws.com/api/bff/academic';
+export const cognitoDirectoryApi = 'https://pludtc2ix3.execute-api.us-east-1.amazonaws.com/api/bff/admin/directorio';
+export const azureCatalogApi = 'https://pludtc2ix3.execute-api.us-east-1.amazonaws.com/api/catalogo-azure';
+export const reportesApi = academicApiBase + '/reportes';
+export const kafkaAdminApi = academicApiBase + '/kafka/topics';
 export const azureProtectedResources = new Map<string, string[]>([
+  [azureCatalogApi, [apiScope]],
+  [azureCatalogApi + '/*', [apiScope]],
   [academicApiBase + '/*', [apiScope]],
+  [reportesApi + '/*', [apiScope]],
+  [kafkaAdminApi + '/*', [apiScope]],
+  [reportesApi + '/*', [apiScope]],
 ]);

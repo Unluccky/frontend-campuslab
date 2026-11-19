@@ -2,7 +2,8 @@ import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } f
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Recurso, RecursoService } from '../../core/recurso';
+import { CATALOG_API, Recurso, RecursoService } from '../../core/recurso';
+import { azureCatalogApi } from '../../auth-config';
 import { AuthService } from '../../core/auth';
 import { finalize } from 'rxjs';
 
@@ -19,6 +20,7 @@ export class AdminRecursos implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   @ViewChild('nombreInput') nombreInput?: ElementRef<HTMLInputElement>;
   authService = inject(AuthService);
+  readonly academic = inject(CATALOG_API) === azureCatalogApi;
 
   recursos: Recurso[] = [];
   isLoading = false;
